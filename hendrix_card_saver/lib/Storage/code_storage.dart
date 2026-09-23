@@ -33,7 +33,7 @@ void main() async{
     },
     version: 1,
   );
-  Future<void> insertDog(CodeStorage code) async {
+  Future<void> insertCode(CodeStorage code) async {
   final db = await database;
   await db.insert(
     'code',
