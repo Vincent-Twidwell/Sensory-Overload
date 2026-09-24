@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -17,7 +16,7 @@ class CodeStorage {
 
   @override 
   String toString() {
-    return 'Code{id: id, name: name, code: code}';
+    return 'Code{id: $id, name: $name, code: $code}';
   }
 
 }
@@ -27,7 +26,7 @@ class CodeDatabase {
     return openDatabase(
       join(await getDatabasesPath(), 'code_database.db'),
       onCreate: (db, version) { 
-        return db.execute('CREATE TABLE codes(id NTEGER PRIMARY KEY, name TEXT, code STRING)'
+        return db.execute('CREATE TABLE codes(id INTEGER PRIMARY KEY, name TEXT, code STRING)'
         );
       },
       version: 1,
@@ -44,7 +43,7 @@ class CodeDatabase {
   }
   Future<List<CodeStorage>> code() async {
   final db = await getDatabase();
-  final List<Map<String, Object?>> codeMaps = await db.query('code');
+  final List<Map<String, Object?>> codeMaps = await db.query('codes');
   return [
     for (final {'id': id as int, 'name': name as String, 'code': code as String}
         in codeMaps)
@@ -54,16 +53,16 @@ class CodeDatabase {
   Future<void> updateCode(CodeStorage code) async {
   final db = await getDatabase();
   await db.update(
-    'code',
+    'codes',
     code.toMap(),
     where: 'id = ?',
-    whereArgs: [code.code],
+    whereArgs: [code.id],
     );
   }
   Future<void> deleteCode(int id) async {
   final db = await getDatabase();
   await db.delete(
-    'code',
+    'codes',
     where: 'id = ?',
     whereArgs: [id],
    );
