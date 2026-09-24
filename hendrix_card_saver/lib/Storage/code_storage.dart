@@ -12,37 +12,38 @@ class CodeStorage {
   CodeStorage({required this.code, required this.id, required this.name});
 
   Map<String, Object?> toMap() {
-    return {'code': code, 'id': id, 'name': name};
+    return {'id': id, 'name': name, 'code': code};
   }
 
   @override 
   String toString() {
-    return 'Code{code: code}';
+    return 'Code{id: id, name: name, code: code}';
   }
 
 }
 
-void main() async{
-  WidgetsFlutterBinding.ensureInitialized();
-  final database = openDatabase(
-    join(await getDatabasesPath(), 'code_database.db'),
-    onCreate: (db, version) {
-      return db.execute(
-        'CREATE TABLE codes(id INTEGER PRIMARY KEY, name TEXT, code STRING)',
-      );
-    },
-    version: 1,
-  );
+class CodeDatabase {
+  static Future<Database> getDatabase() async{
+    return openDatabase(
+      join(await getDatabasesPath(), 'code_database.db'),
+      onCreate: (db, version) { 
+        return db.execute('CREATE TABLE codes(id NTEGER PRIMARY KEY, name TEXT, code STRING)'
+        );
+      },
+      version: 1,
+    );
+  }
+
   Future<void> insertCode(CodeStorage code) async {
-  final db = await database;
+  final db = await getDatabase();
   await db.insert(
-    'code',
+    'codes',
     code.toMap(),
     conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
   Future<List<CodeStorage>> code() async {
-  final db = await database;
+  final db = await getDatabase();
   final List<Map<String, Object?>> codeMaps = await db.query('code');
   return [
     for (final {'id': id as int, 'name': name as String, 'code': code as String}
@@ -51,7 +52,7 @@ void main() async{
     ];
   }
   Future<void> updateCode(CodeStorage code) async {
-  final db = await database;
+  final db = await getDatabase();
   await db.update(
     'code',
     code.toMap(),
@@ -60,7 +61,7 @@ void main() async{
     );
   }
   Future<void> deleteCode(int id) async {
-  final db = await database;
+  final db = await getDatabase();
   await db.delete(
     'code',
     where: 'id = ?',
