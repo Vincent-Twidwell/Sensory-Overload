@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hendrix_card_saver/Sensors/scanner.dart';
 
 import '../theme/app_theme.dart';
 import '../widgets/saved_card.dart';
@@ -58,7 +59,15 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 26),
             FilledButton.icon(
               key: const Key('scanCardButton'),
-              onPressed: onScanCard ?? () {},
+              onPressed:  () 
+              async { 
+                onScanCard?.call();
+                String data;
+                String type;
+                (data, type) = await scanner.getBarcodeInfoFromScan(context); 
+
+                //insert into db however you want, name cannot be gotten from bar though
+              },
               icon: const Icon(Icons.document_scanner_outlined),
               label: const Text('Scan a card'),
             ),
