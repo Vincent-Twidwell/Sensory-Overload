@@ -14,7 +14,7 @@ class HendrixCardSaverApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Card Saver App',
+      title: 'The Plastic Destroyer',
       theme: AppTheme.lightTheme,
       home: const HomeScreen(),
     );
