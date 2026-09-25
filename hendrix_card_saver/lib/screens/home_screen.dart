@@ -30,6 +30,7 @@ class HomeScreenState extends State<HomeScreen>
     CodeDatabase db = CodeDatabase();
     db.code().then((value) {
       setState(() {
+        print("db.code has returned");
         for (var code in value) {
           cards.add(SavedCard(studentName: code.name, studentId: code.id.toString(), onTap: () {}));
         }
@@ -79,10 +80,14 @@ class HomeScreenState extends State<HomeScreen>
                   ),
             ),
             const SizedBox(height: 22),
-            ListView(
-              children: [
-                ...cards
-              ]
+            SizedBox(
+              height: 350,
+              child:
+                ListView(
+                  children: [
+                    ...cards
+                  ]
+                )
             ),
             const SizedBox(height: 26),
             FilledButton.icon(
