@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hendrix_card_saver/Sensors/scanner.dart';
+import 'package:hendrix_card_saver/Sensors/barcode.dart';
 import 'package:sqflite_common_ffi/sqflite_common_ffi.dart';
 
 import '../theme/app_theme.dart';
@@ -118,7 +119,10 @@ class HomeScreenState extends State<HomeScreen>
                     }
                   }
                   print("adding new card ${newCard.name} with id ${newCard.id.toString()}");
-                  cards.add(SavedCard(studentName: newCard.name, studentId: newCard.code.toString(), onTap: () {}));
+                  cards.add(SavedCard(studentName: newCard.name, studentId: newCard.code.toString(), onTap: () {
+                    barcodeCreater bar = barcodeCreater(barcodeInfo: (newCard.code, "code39"));
+                    bar.build(context);
+                  }));
                 });
 
 
