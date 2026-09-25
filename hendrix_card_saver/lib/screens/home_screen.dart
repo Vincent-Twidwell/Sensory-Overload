@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:hendrix_card_saver/Sensors/scanner.dart';
+import 'package:sqflite_common_ffi/sqflite_common_ffi.dart';
 
 import '../theme/app_theme.dart';
 import '../widgets/saved_card.dart';
+import '../Storage/code_storage.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({
@@ -58,7 +61,23 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 26),
             FilledButton.icon(
               key: const Key('scanCardButton'),
-              onPressed: onScanCard ?? () {},
+              onPressed:  () 
+              async { 
+                onScanCard?.call();
+                String data;
+                String type;
+                (data, type) = await scanner.getBarcodeInfoFromScan(context); 
+                
+                if (data.isEmpty){
+                  return;
+                }
+                final newCard = CodeStorage(code: data, id: 000000, name: "Hendrix Card"); //ID = 000000 until we get the card info for it 
+                final database = CodeDatabase();
+                await database.insertCode(newCard);
+
+
+                //insert into db however you want, name cannot be gotten from bar though
+              },
               icon: const Icon(Icons.document_scanner_outlined),
               label: const Text('Scan a card'),
             ),
