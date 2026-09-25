@@ -92,8 +92,8 @@ class HomeScreenState extends State<HomeScreen>
             const SizedBox(height: 26),
             FilledButton.icon(
               key: const Key('scanCardButton'),
-              onPressed:  () 
-              async { 
+              onPressed: 
+              () async { 
                 widget.onScanCard?.call();
                 String data;
                 String type;
@@ -102,17 +102,23 @@ class HomeScreenState extends State<HomeScreen>
                 if (data.isEmpty){
                   return;
                 }
+
+
                 final newCard = CodeStorage(code: data, id: 000000, name: "Hendrix Card"); //ID = 000000 until we get the card info for it 
                 final database = CodeDatabase();
 
             
                 await database.insertCode(newCard);
                 setState(() {
-                  if((cards[0]).studentName == "Sample Student")
+                  if(cards.isNotEmpty)
                   {
-                    cards.removeAt(0);
+                    if((cards.first).studentName == "Sample Name")
+                    {
+                      cards.removeAt(0);
+                    }
                   }
-                  cards.add(SavedCard(studentName: newCard.name, studentId: newCard.id.toString(), onTap: () {}));
+                  print("adding new card ${newCard.name} with id ${newCard.id.toString()}");
+                  cards.add(SavedCard(studentName: newCard.name, studentId: newCard.code.toString(), onTap: () {}));
                 });
 
 
