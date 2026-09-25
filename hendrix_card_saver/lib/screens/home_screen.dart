@@ -6,7 +6,7 @@ import '../theme/app_theme.dart';
 import '../widgets/saved_card.dart';
 import '../Storage/code_storage.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({
     super.key,
     this.onScanCard,
@@ -16,6 +16,32 @@ class HomeScreen extends StatelessWidget {
   final VoidCallback? onScanCard;
   final VoidCallback? onOpenCard;
 
+  @override
+  State<StatefulWidget> createState() => HomeScreenState();
+}
+
+class HomeScreenState extends State<HomeScreen>
+{
+
+  List<SavedCard> cards = List<SavedCard>.empty();
+  @override
+  void initState() {
+    super.initState();
+    CodeDatabase db = CodeDatabase();
+    db.code().then((value) {
+      setState(() {
+        for (var code in value) {
+          cards.add(SavedCard(studentName: code.name, studentId: code.id.toString(), onTap: () {}));
+        }
+
+        if(cards.isEmpty)
+        {
+          cards.add(SavedCard(studentName: "Sample Name", studentId: "00000000",onTap: () {},));
+        }
+      });
+
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,17 +79,17 @@ class HomeScreen extends StatelessWidget {
                   ),
             ),
             const SizedBox(height: 22),
-            SavedCard(
-              studentName: 'Sample Student',
-              studentId: '000000000',
-              onTap: onOpenCard ?? () {},
+            ListView(
+              children: [
+                ...cards
+              ]
             ),
             const SizedBox(height: 26),
             FilledButton.icon(
               key: const Key('scanCardButton'),
               onPressed:  () 
               async { 
-                onScanCard?.call();
+                widget.onScanCard?.call();
                 String data;
                 String type;
                 (data, type) = await scanner.getBarcodeInfoFromScan(context); 
@@ -73,7 +99,15 @@ class HomeScreen extends StatelessWidget {
                 }
                 final newCard = CodeStorage(code: data, id: 000000, name: "Hendrix Card"); //ID = 000000 until we get the card info for it 
                 final database = CodeDatabase();
+
+                if((cards[0]).studentName == "Sample Student")
+                {
+                  cards.removeAt(0);
+                }
                 await database.insertCode(newCard);
+                setState(() {
+                  cards.add(SavedCard(studentName: newCard.name, studentId: newCard.id.toString(), onTap: () {}));
+                });
 
 
                 //insert into db however you want, name cannot be gotten from bar though
