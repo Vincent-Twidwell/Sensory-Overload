@@ -23,7 +23,7 @@ class HomeScreen extends StatefulWidget {
 class HomeScreenState extends State<HomeScreen>
 {
 
-  List<SavedCard> cards = List<SavedCard>.empty();
+  List<SavedCard> cards = List<SavedCard>.empty(growable: true);
   @override
   void initState() {
     super.initState();
@@ -105,12 +105,13 @@ class HomeScreenState extends State<HomeScreen>
                 final newCard = CodeStorage(code: data, id: 000000, name: "Hendrix Card"); //ID = 000000 until we get the card info for it 
                 final database = CodeDatabase();
 
-                if((cards[0]).studentName == "Sample Student")
-                {
-                  cards.removeAt(0);
-                }
+            
                 await database.insertCode(newCard);
                 setState(() {
+                  if((cards[0]).studentName == "Sample Student")
+                  {
+                    cards.removeAt(0);
+                  }
                   cards.add(SavedCard(studentName: newCard.name, studentId: newCard.id.toString(), onTap: () {}));
                 });
 

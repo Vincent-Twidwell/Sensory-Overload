@@ -21,8 +21,7 @@ class scanner
       return ("", "");
     }
 
-    //?? no idea what any of this means but quick fix quickly fixed it into this
-    return Future((capture.firstBarcode?.rawValue, capture.firstBarcode?.type.name) as FutureOr<(String, String)> Function());
+    return (capture.firstBarcode?.rawValue ?? "", capture.firstBarcode?.type.name ?? "");
 
   }
 
